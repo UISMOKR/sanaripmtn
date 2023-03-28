@@ -122,7 +122,21 @@ class SearchAddressView(GenericAPIView):
         return Response('По данному ПИНу ничего не найдено!', status=status.HTTP_404_NOT_FOUND)
 
 
-class SearchFamilyMembersView(SearchAddressView):
+class SearchFamilyMembersView(GenericAPIView):
     """Search citizen family members info by PIN"""
 
-    url = config('family_members_url')
+    serializer_class = SearchCitizenInfoSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+        url = config('family_members_url')
+        serializer = SearchCitizenInfoSerializer(data=request.data)
+        if serializer.is_valid():
+            pin = serializer.validated_data['pin']
+            payload = requests.get(
+                url=f'{url}/{pin}',
+                headers={config('headers_key'): config('headers_value')},
+                verify=False
+            )
+            return Response(payload.json(), status=status.HTTP_200_OK)
+        return Response('По данному ПИНу ничего не найдено!', status=status.HTTP_404_NOT_FOUND)
