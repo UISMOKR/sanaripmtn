@@ -138,10 +138,9 @@ cover/
 **/staticfiles/
 .DS_Store
 
-apps/users/migrations/
+
 
 templates/
 
 postgres_data/
-
 
