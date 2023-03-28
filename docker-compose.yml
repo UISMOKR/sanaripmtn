@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    ports:
+     - "5432:5432"
+    volumes:
+      - ./postgres_data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    env_file:
+      - .env
+
+  web:
+    build: .
+    tty: true
+    command: bash -c 'python manage.py collectstatic --no-input &&
+      python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000'
+
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  nginx:
+    build: ./nginx
+    restart: on-failure
+    ports:
+      - "80:80"
+    volumes:
+      - static:/staticfiles
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static:
