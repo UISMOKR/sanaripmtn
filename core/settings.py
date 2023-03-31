@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     # 'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware',
 ]
 
@@ -187,6 +188,8 @@ SWAGGER_SETTINGS = {
 }
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ['http://0.0.0.0', 'http://172.30.4.27']
 
