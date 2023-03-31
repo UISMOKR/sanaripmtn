@@ -45,7 +45,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'is_staff',
             'last_login',
             'is_superuser',
-            'referral_token',
         ]
         extra_kwargs = {
             "password": {"required": False},
