@@ -61,6 +61,7 @@ class LoginUserView(CreateAPIView):
         return Response(
             {
                 "status": "Вы, успешно авторизовались!",
+                "user_id": user.pk,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             }
@@ -90,15 +91,17 @@ class UserProfileView(GenericViewSet,
     def partial_update(self, request, *args, **kwargs):
         """Updating user profile data and profile password"""
 
-        partial = kwargs.pop('partial', True)
+        # partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data)
+        else:
             if instance.password:
                 instance.set_password(instance.password)
                 instance.save()
-            return Response(serializer.data)
+                return Response(serializer.data)
         return Response(serializer.errors)
 
 
