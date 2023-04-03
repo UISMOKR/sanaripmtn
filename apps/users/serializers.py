@@ -54,20 +54,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         }
 
 
-# class PasswordChangeSerializer(serializers.ModelSerializer):
-#     """User password change Serializer"""
-#
-#     password2 = serializers.CharField(write_only=True, required=True)
-#
-#     class Meta:
-#         model = User
-#         fields = 'password'
-#
-#     def validate(self, attrs):
-#         if attrs['password'] != attrs['password2']:
-#             raise serializers.ValidationError(
-#                 {"password": "Пароли не совпали"}
-#             )
+class PasswordChangeSerializer(serializers.Serializer):
+    """User password change Serializer"""
+
+    old_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
 
 
 class LoginUserSerializer(serializers.ModelSerializer):

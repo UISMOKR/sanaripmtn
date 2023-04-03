@@ -4,6 +4,7 @@ from decouple import config
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
@@ -16,6 +17,7 @@ from apps.users.serializers import (
     RegisterUserSerializer,
     UserProfileSerializer,
     LoginUserSerializer,
+    PasswordChangeSerializer,
 )
 
 
@@ -70,9 +72,7 @@ class LoginUserView(CreateAPIView):
 
 class UserProfileView(GenericViewSet,
                       mixins.ListModelMixin,
-                      mixins.RetrieveModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin):
+                      mixins.RetrieveModelMixin):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
 
@@ -88,21 +88,24 @@ class UserProfileView(GenericViewSet,
         else:
             return self.queryset
 
-    def partial_update(self, request, *args, **kwargs):
-        """Updating user profile data and profile password"""
 
-        # partial = kwargs.pop('partial', True)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+class PasswordChangeView(APIView):
+    """User password change"""
+
+    serializer_class = PasswordChangeSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+
+        old_password = request.data['old_password']
+        new_password = request.data['new_password']
+        user = User.objects.filter(pk=self.request.user.pk).first()
+        if not user.check_password(old_password):
+            raise AuthenticationFailed("Действующий пароль неверный!")
         else:
-            if instance.password:
-                instance.set_password(instance.password)
-                instance.save()
-                return Response(serializer.data)
-        return Response(serializer.errors)
+            user.set_password(new_password)
+            user.save()
+            return Response({"статус": "Пароль успешно изменён"})
 
 
 class SearchAddressView(GenericAPIView):
