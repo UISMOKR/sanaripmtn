@@ -49,12 +49,12 @@ class UserAdmin(BaseUserAdmin, admin.ModelAdmin):
         (None, {'fields': ('password',)}),
         ('Персональная информация', {'fields': ['name', 'lastname', 'surname', 'date_of_birth', 'branch', 'user_type',
                                                 'created_by', 'date_of_creation', 'is_staff', 'is_active']}),
-        ('Разрешения пользователя', {'fields': ['user_permissions']}),
+        ('Разрешения пользователя', {'fields': ['groups']}),
     )
     add_fieldsets = (
         ('Персональная информация', {'fields': ['pin', 'password1', 'password2', 'name', 'lastname', 'surname',
                                                 'date_of_birth', 'branch', 'user_type']}),
-        ('Разрешения пользователя', {'fields': ['user_permissions']}),
+        ('Разрешения пользователя', {'fields': ['groups']}),
     )
     search_fields = []
     ordering = []

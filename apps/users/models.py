@@ -66,7 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         (admin, 'Администратор'),
     ]
 
-    pin = models.IntegerField(unique=True, verbose_name='ПИН')
+    pin = models.BigIntegerField(unique=True, verbose_name='ПИН')
     name = models.CharField(max_length=255, verbose_name='Имя')
     lastname = models.CharField(max_length=255, verbose_name='Фамилия')
     surname = models.CharField(max_length=255, null=True, blank=True, verbose_name='Отчество')
